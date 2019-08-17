@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RenoiseScriptingTool doc_version="0">
+  <ApiVersion>5</ApiVersion>
+  <AutoUpgraded>true</AutoUpgraded>
+  <Id>github.sroccaserra.8BitSampleLoader</Id>
+  <Version>0.1.0</Version>
+  <Author>Seb Roccaserra [sroccaserra@yahoo.com]</Author>
+  <Name>Renoise 8 bit sample loader</Name>
+  <Category>Tool Development</Category>
+  <Description>A tool to load an 8 bit signed PCM mono sample, raw or IFF (read: a sample from the Amiga era)</Description>
+  <Homepage>http://github.com/sroccaserra/renoise-8-bit-sample-loader</Homepage>
+  <Icon></Icon>
+  <Platform>Windows, Mac, Linux</Platform>
+</RenoiseScriptingTool>
