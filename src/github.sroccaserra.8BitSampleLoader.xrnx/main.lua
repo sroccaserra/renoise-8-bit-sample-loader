@@ -1,5 +1,7 @@
 -- Renoise script
 
+require('iff_tools')
+
 local IS_DEV_MODE = true
 
 local TOOL_MESSAGES = {
@@ -29,25 +31,24 @@ function tool_remove_iff_header(filename)
   end
 
   local form_chunk = filehandle:read(12)
-  local type_id = string.sub(form_chunk, 1, 4)
+  local form_chunk_info = read_form_chunk_info_from_bytes(form_chunk)
 
-  if type_id == 'RIFF' then
+  if form_chunk_info.chunk_id == 'RIFF' then
     renoise.app():show_message(TOOL_MESSAGES.unsupportedWaveFile)
     return
   end
 
-  if type_id == 'FORM' then
-    local file_type = string.sub(form_chunk, 9, 12)
-    if file_type == 'AIFF' then
+  if form_chunk_info.chunk_id == 'FORM' then
+    if form_chunk_info.file_type_id == 'AIFF' then
       renoise.app():show_message(TOOL_MESSAGES.unsupportedAiffFile)
       return
     end
-    if file_type ~= '8SVX' then
+    if form_chunk_info.file_type_id ~= '8SVX' then
       renoise.app():show_message(TOOL_MESSAGES.unsupportedFileType)
       return
     end
 
-    renoise.app():show_status('File type is: '..file_type)
+    renoise.app():show_status('File type is: '..form_chunk_info.file_type_id)
   else
     renoise.app():show_status('File type is: RAW (hopefully).')
   end
