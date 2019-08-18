@@ -20,8 +20,8 @@ describe('The FORM chunk', function()
     assert.is.equal('FORM', chunk_info.chunk_id)
   end)
 
-  it('should read the size of the FORM chunk', function()
-    assert.is.equal(0x270a, chunk_info.chunk_size)
+  it('should read the length of the FORM chunk', function()
+    assert.is.equal(0x270a, chunk_info.chunk_length)
   end)
 
   it('should read the file type', function()
