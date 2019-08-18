@@ -12,3 +12,11 @@ function read_form_chunk_info_from_bytes(bytes)
     file_type_id = file_type_id
   }
 end
+
+function read_vhdr_chunk_info_from_bytes(bytes)
+  local chunk_id = string.sub(bytes, 1, 4)
+
+  return {
+    chunk_id = chunk_id
+  }
+end
