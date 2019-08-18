@@ -1,4 +1,4 @@
-Tentative Renoise tool to load 8 bit samples from the Amiga era.
+Tentative Renoise tool to load 8 bit samples from the Amiga era (IFF and RAW 8 bit signed mono PCM only).
 
 Warning: I am not sure I have the time or skills to finish this. If you whish to help, please make a pull request.
 
@@ -12,6 +12,30 @@ See also:
 
 - <https://forum.renoise.com/t/the-original-amiga-soundtracker-sample-disks/39473/22>
 - <https://gist.github.com/sroccaserra/5bacbdb3e000a54dbae0972c346021d4>
+
+## TODO
+
+There is still a long way to go to load an IFF file:
+
+```
+- [X] Learn how to script Renoise for dummies
+- [X] Parse the FORM chunk
+- [X] Warn for unsupported file types and quit
+- [X] Setup test environment for a quicker feedback
+- [ ] Parse sample rate info from the VHDR chunk
+- [ ] Find the BODY chunk
+- [ ] Load the BODY chunk data to the current sample <-- If I can do that, the project will be ok. If not I'll need some help.
+- [ ] Parse loop info from the VHDR chunk
+- [ ] Set the loop start in the current sample
+```
+
+Then maybe:
+
+```
+- [ ] Allow to load a RAW file
+- [ ] Allow to select sample rate for RAW files
+- [ ] Support many octaves from IFF files (add slices in Renoise?)
+```
 
 ## Running the Lua tests
 
@@ -40,6 +64,7 @@ About Renoise script development:
 
 - <https://github.com/renoise/xrnx>
 - <https://files.renoise.com/xrnx/documentation/>
+- <https://files.renoise.com/xrnx/documentation/Renoise.Song.API.lua.html#h2_97>
 
 About Lua and Luajit:
 
@@ -49,4 +74,5 @@ About Lua and Luajit:
 
 About the IFF sound file format:
 
+- <https://wiki.amigaos.net/wiki/IFF_Standard>
 - <https://wiki.amigaos.net/wiki/8SVX_IFF_8-Bit_Sampled_Voice>
