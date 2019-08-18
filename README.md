@@ -1,6 +1,7 @@
 Tentative Renoise tool to load 8 bit samples from the Amiga era (IFF and RAW 8 bit signed mono PCM only).
 
-Warning: I am not sure I have the time or skills to finish this. If you whish to help, please make a pull request.
+`/!\` Warning: this is unusable at the moment, I am not sure I have the time or
+skills to finish this. If you whish to help, please make a pull request.
 
 If you wonder what a sample from the Amiga era is, you can look here:
 
@@ -22,11 +23,12 @@ There is still a long way to go to load an IFF file:
 - [X] Parse the FORM chunk
 - [X] Warn for unsupported file types and quit
 - [X] Setup test environment for a quicker feedback
-- [ ] Parse sample rate info from the VHDR chunk
+- [X] Parse sample rate info from the VHDR chunk
 - [ ] Find the BODY chunk
 - [ ] Load the BODY chunk data to the current sample <-- If I can do that, the project will be ok. If not I'll need some help.
 - [ ] Parse loop info from the VHDR chunk
 - [ ] Set the loop start in the current sample
+- [ ] Deal with variable chunk order (or check that the VHDR chunk always starts at byte 13)
 ```
 
 Then maybe:

@@ -11,7 +11,8 @@ end
 function read_vhdr_chunk_info_from_bytes(bytes)
   return {
     chunk_id = _read_iff_chunk_id(bytes),
-    chunk_length = _read_iff_chunk_length(bytes)
+    chunk_length = _read_iff_chunk_length(bytes),
+    sample_rate = _read_uword(bytes, 21)
   }
 end
 
@@ -21,6 +22,12 @@ end
 
 function _read_iff_chunk_length(bytes)
   return _read_ulong(bytes, 5)
+end
+
+function _read_uword(bytes, start)
+  local byte_2, byte_1 = string.byte(bytes, start, start + 1)
+  return byte_1 +
+         bit.lshift(byte_2, 8)
 end
 
 function _read_ulong(bytes, start)

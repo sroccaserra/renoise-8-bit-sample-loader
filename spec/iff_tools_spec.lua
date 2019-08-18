@@ -33,9 +33,13 @@ end)
 describe('The VHDR chunk', function()
   local VHDR_CHUNK = bytes_from_hex('56484452'.. -- 'VHDR'
                                     '00000014'.. -- chunk length after this ulong
-                                    '00000628'..
-                                    '00001ee8'..
-                                    '000000204156010000010000')
+                                    '00000628'.. -- oneShotHiSamples
+                                    '00001ee8'.. -- repeatHiSamples
+                                    '00000020'.. -- samplesPerHiCycle
+                                    '4156'..     -- samplesPerSec = data sampling rate
+                                    '01'..       -- ctOctave
+                                    '00'..       -- sCompression
+                                    '00010000')  -- volume (16+16 bits fixed point), 00010000 = 0.1 (maximum in the IFF spec)
   local chunk_info
 
   before_each(function()
@@ -48,5 +52,9 @@ describe('The VHDR chunk', function()
 
   it('should read the chunk length', function()
     assert.is.equal(20, chunk_info.chunk_length)
+  end)
+
+  it('should read the sample rate from the VHDR chunk', function()
+    assert.is.equal(16726, chunk_info.sample_rate)
   end)
 end)
