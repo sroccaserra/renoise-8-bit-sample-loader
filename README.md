@@ -13,6 +13,17 @@ See also:
 - <https://forum.renoise.com/t/the-original-amiga-soundtracker-sample-disks/39473/22>
 - <https://gist.github.com/sroccaserra/5bacbdb3e000a54dbae0972c346021d4>
 
+## Running the Lua tests
+
+Requirements: have docker installed, and having built the docker image. Run
+`make build` to build the docker image.
+
+Run the tests:
+
+```
+$ make test
+```
+
 ## References
 
 About Renoise:

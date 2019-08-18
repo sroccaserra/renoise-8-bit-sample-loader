@@ -1,0 +1,5 @@
+describe('Bit operations', function()
+  it('should have the Luajit bit global object extension', function()
+    assert.is.truthy(bit)
+  end)
+end)
