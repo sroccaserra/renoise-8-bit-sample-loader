@@ -18,11 +18,17 @@ See also:
 Requirements: have docker installed, and having built the docker image. Run
 `make build` to build the docker image.
 
+Since I got tired of editing / reloading the tools in Renoise / running the
+tools in Renoise to see the result, I wrote automated tests to have faster
+feedback while working.
+
 Run the tests:
 
 ```
 $ make test
 ```
+
+Note: the tests use [Busted](https://olivinelabs.com/busted/).
 
 ## References
 
@@ -35,9 +41,11 @@ About Renoise script development:
 - <https://github.com/renoise/xrnx>
 - <https://files.renoise.com/xrnx/documentation/>
 
-About Lua:
+About Lua and Luajit:
 
 - <https://www.lua.org/pil/contents.html>
+- <http://bitop.luajit.org/api.html>
+- <https://olivinelabs.com/busted/>
 
 About the IFF sound file format:
 
