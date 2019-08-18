@@ -1,10 +1,6 @@
 -- Renoise script
 
-function tool_show_file_browser()
-  local filename = renoise.app():prompt_for_filename_to_read({'*.*'}, 'Choose an 8 bit sample...')
-
-  tool_remove_iff_header(filename)
-end
+local IS_DEV_MODE = true
 
 local TOOL_MESSAGES = {
   unsupportedWaveFile = 'You are trying to load a WAVE file, this tool is not able to load it. As Renoise supports WAVE files, please load this file the usual way.',
@@ -12,9 +8,16 @@ local TOOL_MESSAGES = {
   unsupportedFileType = 'The file starts with a FORM chunk, but is not supported.'
 }
 
+function tool_show_file_browser()
+  local filename = renoise.app():prompt_for_filename_to_read({'*.*'}, 'Choose an 8 bit sample...')
+
+  tool_remove_iff_header(filename)
+end
+
 function tool_remove_iff_header(filename)
-  -- TODO: remove. It's a dev default value.
-  filename = filename or '/Users/sebastien.roccaserra/Music/Amiga/ST-XX_with_conversion/ST-01/strings6'
+  if IS_DEV_MODE then
+    filename = filename or '/Users/sebastien.roccaserra/Music/Amiga/ST-XX_with_conversion/ST-01/strings6'
+  end
 
   local filehandle, err = io.open(filename, 'r')
   if not filehandle then
@@ -55,10 +58,9 @@ renoise.tool():add_menu_entry {
   invoke = tool_show_file_browser
 }
 
--- TODO: remove.
--- It's a dev menu entry.
-renoise.tool():add_menu_entry {
-  name = "Main Menu:Tools:8 bit sample loader:Remove IFF header",
-  invoke = tool_remove_iff_header
-}
-
+if IS_DEV_MODE then
+  renoise.tool():add_menu_entry {
+    name = "Main Menu:Tools:8 bit sample loader:Remove IFF header",
+    invoke = tool_remove_iff_header
+  }
+end
