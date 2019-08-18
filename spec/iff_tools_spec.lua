@@ -7,7 +7,9 @@ require('iff_tools')
 
 
 describe('The FORM chunk', function()
-  local FORM_CHUNK = bytes_from_hex('464f524d0000270a38535658')
+  local FORM_CHUNK = bytes_from_hex('464f524d'..  -- 'FORM'
+                                    '0000270a'..  -- chunk length after this ulong (the file size minus 8)
+                                    '38535658')   -- '8SVX'
   local chunk_info
 
   before_each(function()
@@ -29,11 +31,22 @@ end)
 
 
 describe('The VHDR chunk', function()
-  local VHDR_CHUNK = bytes_from_hex('56484452000000140000062800001ee8000000204156010000010000')
+  local VHDR_CHUNK = bytes_from_hex('56484452'.. -- 'VHDR'
+                                    '00000014'.. -- chunk length after this ulong
+                                    '00000628'..
+                                    '00001ee8'..
+                                    '000000204156010000010000')
+  local chunk_info
+
+  before_each(function()
+    chunk_info = read_vhdr_chunk_info_from_bytes(VHDR_CHUNK)
+  end)
 
   it('should read the chunk_id of the VHDR chunk', function()
-    chunk_info = read_vhdr_chunk_info_from_bytes(VHDR_CHUNK)
-
     assert.is.equal('VHDR', chunk_info.chunk_id)
+  end)
+
+  it('should read the chunk length', function()
+    assert.is.equal(20, chunk_info.chunk_length)
   end)
 end)
