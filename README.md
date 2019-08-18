@@ -27,3 +27,7 @@ About Renoise script development:
 About Lua:
 
 - <https://www.lua.org/pil/contents.html>
+
+About the IFF sound file format:
+
+- <https://wiki.amigaos.net/wiki/8SVX_IFF_8-Bit_Sampled_Voice>
