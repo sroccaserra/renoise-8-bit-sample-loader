@@ -1,3 +1,16 @@
+local FORM_CHUNK_NB_BYTES = 12
+local VHDR_CHUNK_NB_BYTES = 28
+
+function read_iff_chunks(file_handle)
+  local form_chunk_bytes = file_handle:read(FORM_CHUNK_NB_BYTES)
+  local vhdr_chunk_bytes = file_handle:read(VHDR_CHUNK_NB_BYTES)
+
+  return {
+    form_chunk_info = read_form_chunk_info_from_bytes(form_chunk_bytes),
+    vhdr_chunk_info = read_vhdr_chunk_info_from_bytes(vhdr_chunk_bytes)
+  }
+end
+
 function read_form_chunk_info_from_bytes(bytes)
   local file_type_id = string.sub(bytes, 9, 12)
 

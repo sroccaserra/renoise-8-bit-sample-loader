@@ -1,15 +1,13 @@
 local bit = require('bit')
 
 require('spec.test_tools')
+require('spec.file_handle_stub')
 
 package.path = 'src/github.sroccaserra.8BitSampleLoader.xrnx/?.lua;'..package.path
 require('iff_tools')
 
 
 describe('The FORM chunk', function()
-  local FORM_CHUNK = bytes_from_hex('464f524d'..  -- 'FORM'
-                                    '0000270a'..  -- chunk length after this ulong (the file size minus 8)
-                                    '38535658')   -- '8SVX'
   local chunk_info
 
   before_each(function()
@@ -31,15 +29,6 @@ end)
 
 
 describe('The VHDR chunk', function()
-  local VHDR_CHUNK = bytes_from_hex('56484452'.. -- 'VHDR'
-                                    '00000014'.. -- chunk length after this ulong
-                                    '00000628'.. -- oneShotHiSamples
-                                    '00001ee8'.. -- repeatHiSamples
-                                    '00000020'.. -- samplesPerHiCycle
-                                    '4156'..     -- samplesPerSec = data sampling rate
-                                    '01'..       -- ctOctave
-                                    '00'..       -- sCompression
-                                    '00010000')  -- volume (16+16 bits fixed point), 00010000 = 0.1 (maximum in the IFF spec)
   local chunk_info
 
   before_each(function()
@@ -56,5 +45,28 @@ describe('The VHDR chunk', function()
 
   it('should read the sample rate from the VHDR chunk', function()
     assert.is.equal(16726, chunk_info.sample_rate)
+  end)
+end)
+
+
+describe('Splitting chunks until the BODY chunk', function()
+  it('should return the FORM chunk (info only)', function()
+    local file_handle_stub = FileHandleStub:new()
+
+    local iff_chunks, err = read_iff_chunks(file_handle_stub)
+
+    local chunk_info = iff_chunks.form_chunk_info
+
+    assert.is.equal('FORM', chunk_info.chunk_id)
+  end)
+
+  it('should return the VHDR chunk', function()
+    local file_handle_stub = FileHandleStub:new()
+
+    local iff_chunks, err = read_iff_chunks(file_handle_stub)
+
+    local chunk_info = iff_chunks.vhdr_chunk_info
+
+    assert.is.equal('VHDR', chunk_info.chunk_id)
   end)
 end)
