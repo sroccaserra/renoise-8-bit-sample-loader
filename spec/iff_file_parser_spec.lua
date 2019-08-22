@@ -1,16 +1,18 @@
 local bit = require('bit')
 
-local FileHandleStub = require('spec.file_handle_stub')
+local test_data = require('spec.test_data')
 
 package.path = 'src/github.sroccaserra.8BitSampleLoader.xrnx/?.lua;'..package.path
-local iff_tools = require('iff_tools')
+local IffFileParser = require('iff_file_parser').IffFileParser
 
 
 describe('The FORM chunk', function()
+  local iff_file_parser
   local chunk_info
 
   before_each(function()
-    chunk_info = iff_tools.read_form_chunk_info_from_bytes(FORM_CHUNK)
+    iff_file_parser = IffFileParser:new(test_data.IFF_FILE_BYTES)
+    chunk_info = iff_file_parser:get_form_chunk_info()
   end)
 
   it('should read the type id of a FORM chunk', function()
@@ -28,10 +30,12 @@ end)
 
 
 describe('The VHDR chunk', function()
+  local iff_file_parser
   local chunk_info
 
   before_each(function()
-    chunk_info = iff_tools.read_vhdr_chunk_info_from_bytes(VHDR_CHUNK)
+    iff_file_parser = IffFileParser:new(test_data.IFF_FILE_BYTES)
+    chunk_info = iff_file_parser:get_vhdr_chunk_info()
   end)
 
   it('should read the chunk_id of the VHDR chunk', function()
@@ -44,28 +48,5 @@ describe('The VHDR chunk', function()
 
   it('should read the sample rate from the VHDR chunk', function()
     assert.is.equal(16726, chunk_info.sample_rate)
-  end)
-end)
-
-
-describe('Splitting chunks until the BODY chunk', function()
-  it('should return the FORM chunk (info only)', function()
-    local file_handle_stub = FileHandleStub:new()
-
-    local iff_chunks, err = iff_tools.read_iff_chunks(file_handle_stub)
-
-    local chunk_info = iff_chunks.form_chunk_info
-
-    assert.is.equal('FORM', chunk_info.chunk_id)
-  end)
-
-  it('should return the VHDR chunk', function()
-    local file_handle_stub = FileHandleStub:new()
-
-    local iff_chunks, err = iff_tools.read_iff_chunks(file_handle_stub)
-
-    local chunk_info = iff_chunks.vhdr_chunk_info
-
-    assert.is.equal('VHDR', chunk_info.chunk_id)
   end)
 end)

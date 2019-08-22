@@ -1,6 +1,6 @@
 -- Renoise script
 
-local iff_tools = require('iff_tools')
+local iff_file_parser = require('iff_file_parser')
 
 local IS_DEV_MODE = true
 
@@ -30,8 +30,16 @@ function tool_remove_iff_header(filename)
     return
   end
 
-  local form_chunk = filehandle:read(12)
-  local form_chunk_info = iff_tools.read_form_chunk_info_from_bytes(form_chunk)
+  local file_bytes, err = filehandle:read('*all')
+  if not file_bytes then
+    renoise.app():show_message('Error while reading file '..filename)
+    if err then
+      print(err)
+    end
+  end
+
+  local iff_file_parser = IffFileParser:new(file_bytes)
+  local form_chunk_info = iff_file_parser:get_form_chunk_info()
 
   if form_chunk_info.chunk_id == 'RIFF' then
     renoise.app():show_message(TOOL_MESSAGES.unsupportedWaveFile)
