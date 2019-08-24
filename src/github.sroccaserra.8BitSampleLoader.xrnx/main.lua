@@ -1,8 +1,12 @@
 -- Renoise script
 
-local iff_file_parser = require('iff_file_parser')
+local IffFileParser = require('iff_file_parser').IffFileParser
 
-local IS_DEV_MODE = true
+local BIT_DEPTH = 8
+local NUM_CHANNELS = 1
+local CHANNEL_INDEX = 1
+
+local IS_DEV_MODE = false
 
 local TOOL_MESSAGES = {
   unsupportedWaveFile = 'You are trying to load a WAVE file, this tool is not able to load it. As Renoise supports WAVE files, please load this file the usual way.',
@@ -10,13 +14,35 @@ local TOOL_MESSAGES = {
   unsupportedFileType = 'The file starts with a FORM chunk, but is not supported.'
 }
 
-function tool_show_file_browser()
-  local filename = renoise.app():prompt_for_filename_to_read({'*.*'}, 'Choose an 8 bit sample...')
+local function insert_sample_from_iff_data(file_parser)
+  local sample_rate = file_parser:get_sample_rate()
+  local nb_frames = file_parser:get_nb_frames()
 
-  tool_remove_iff_header(filename)
+  local selected_sample = renoise.song().selected_sample
+
+  if not selected_sample then
+    local instrument = renoise.song().selected_instrument
+    selected_sample = instrument:insert_sample_at(1)
+  end
+
+  local sample_buffer = selected_sample.sample_buffer
+
+  local status = sample_buffer:create_sample_data(sample_rate, BIT_DEPTH, NUM_CHANNELS, nb_frames)
+  if not status then
+    error('Error: Allocation failed.')
+  end
+
+  sample_buffer:prepare_sample_data_changes()
+
+  for i = 1,nb_frames do
+    local sample_value = file_parser:get_renoise_sample_value(i)
+    sample_buffer:set_sample_data(CHANNEL_INDEX, i, sample_value)
+  end
+
+  sample_buffer:finalize_sample_data_changes()
 end
 
-function tool_remove_iff_header(filename)
+local function read_iff_file(filename)
   if IS_DEV_MODE then
     filename = filename or '/Users/sebastien.roccaserra/Music/Amiga/ST-XX_with_conversion/ST-01/strings6'
   end
@@ -56,20 +82,26 @@ function tool_remove_iff_header(filename)
       return
     end
 
-    renoise.app():show_status('File type is: '..form_chunk_info.file_type_id)
+    insert_sample_from_iff_data(iff_file_parser)
   else
     renoise.app():show_status('File type is: RAW (hopefully).')
   end
 end
 
+local function tool_show_file_browser()
+  local filename = renoise.app():prompt_for_filename_to_read({'*.*'}, 'Choose an 8 bit sample...')
+
+  read_iff_file(filename)
+end
+
 renoise.tool():add_menu_entry {
-  name = "Main Menu:Tools:8 bit sample loader:Load...",
+  name = "Main Menu:Tools:8 bit sample loader:Load IFF audio file...",
   invoke = tool_show_file_browser
 }
 
 if IS_DEV_MODE then
   renoise.tool():add_menu_entry {
-    name = "Main Menu:Tools:8 bit sample loader:Remove IFF header",
-    invoke = tool_remove_iff_header
+    name = "Main Menu:Tools:8 bit sample loader:Read IFF file",
+    invoke = read_iff_file
   }
 end

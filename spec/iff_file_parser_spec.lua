@@ -50,6 +50,10 @@ describe('The VHDR chunk', function()
   it('should read the sample rate from the VHDR chunk', function()
     assert.is.equal(16726, chunk_info.sample_rate)
   end)
+
+  it('should read the sample rate', function()
+    assert.is.equal(16726, iff_file_parser:get_sample_rate())
+  end)
 end)
 
 describe('The BODY chunk', function()
@@ -65,6 +69,12 @@ describe('The BODY chunk', function()
 
       assert.is.equal('BODY', chunk_info.chunk_id)
       assert.is.equal(4, chunk_info.chunk_length)
+    end)
+
+    it('should read the number of frames', function()
+      local nb_frames = iff_file_parser:get_nb_frames()
+
+      assert.is.equal(4, nb_frames)
     end)
 
     it('should return the sample bytes', function()

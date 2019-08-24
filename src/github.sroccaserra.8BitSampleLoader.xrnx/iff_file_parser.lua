@@ -68,6 +68,18 @@ function IffFileParser:get_sample_bytes()
   return string.sub(self.bytes, start_byte_number, start_byte_number + body_chunk_info.chunk_length)
 end
 
+function IffFileParser:get_sample_rate()
+  local vhdr_chunk_info = self:get_vhdr_chunk_info()
+
+  return vhdr_chunk_info.sample_rate
+end
+
+function IffFileParser:get_nb_frames()
+  local body_chunk_info = self:find_body_chunk_info()
+
+  return body_chunk_info.chunk_length
+end
+
 function IffFileParser:get_renoise_sample_value(index)
   local body_chunk_info = self:find_body_chunk_info()
   local start_byte_number = body_chunk_info.start_byte_number + ID_AND_LENGTH_NB_BYTES
