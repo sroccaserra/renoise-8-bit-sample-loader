@@ -56,8 +56,16 @@ function IffFileParser:find_body_chunk_info()
 
   return {
     chunk_id = chunk_id,
-    chunk_length = chunk_length
+    chunk_length = chunk_length,
+    start_byte_number = start_byte_number
   }
+end
+
+function IffFileParser:get_sample_data()
+  local body_chunk_info = self:find_body_chunk_info()
+  local start_byte_number = body_chunk_info.start_byte_number + ID_AND_LENGTH_NB_BYTES
+
+  return string.sub(self.bytes, start_byte_number, start_byte_number + body_chunk_info.chunk_length)
 end
 
 function IffFileParser:_read_id_and_length(start)

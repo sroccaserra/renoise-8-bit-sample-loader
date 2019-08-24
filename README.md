@@ -25,7 +25,7 @@ There is still a little work to do to load an IFF file:
 - [X] Setup test environment for a quicker feedback
 - [X] Parse sample rate info from the VHDR chunk
 - [X] Find the BODY chunk
-- [ ] Load the BODY chunk data to the current sample <-- If I can do that, the project will be ok. If not I'll need some help.
+- [-] Load the BODY chunk data to the current sample <-- If I can do that, the project will be ok. If not I'll need some help.
 - [ ] Parse loop info from the VHDR chunk
 - [ ] Set the loop start in the current sample
 - [ ] Deal with variable chunk order (or check that the VHDR chunk always starts at byte 13)

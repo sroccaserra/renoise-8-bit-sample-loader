@@ -52,29 +52,43 @@ describe('The VHDR chunk', function()
 end)
 
 describe('The BODY chunk', function()
-  it('should find the BODY chunk', function()
-    local iff_file_parser = IffFileParser:new(test_data.IFF_FILE_BYTES)
+  describe('Main behaviour', function()
+    local iff_file_parser
 
-    local chunk_info = iff_file_parser:find_body_chunk_info()
+    before_each(function()
+      iff_file_parser = IffFileParser:new(test_data.IFF_FILE_BYTES)
+    end)
 
-    assert.is.equal('BODY', chunk_info.chunk_id)
-    assert.is.equal(4, chunk_info.chunk_length)
+    it('should find the BODY chunk', function()
+      local chunk_info = iff_file_parser:find_body_chunk_info()
+
+      assert.is.equal('BODY', chunk_info.chunk_id)
+      assert.is.equal(4, chunk_info.chunk_length)
+    end)
+
+    it('should return the sample data', function()
+      local sample_data = iff_file_parser:get_sample_data()
+
+      assert.is.equal('ABCD', sample_data)
+    end)
   end)
 
-  it('should find an empty BODY chunk', function()
-    local iff_file_parser = IffFileParser:new(test_data.IFF_FILE_WITH_EMPTY_BODY)
+  describe('Edge cases and errors', function()
+    it('should find an empty BODY chunk', function()
+      local iff_file_parser = IffFileParser:new(test_data.IFF_FILE_WITH_EMPTY_BODY)
 
-    local chunk_info = iff_file_parser:find_body_chunk_info()
+      local chunk_info = iff_file_parser:find_body_chunk_info()
 
-    assert.is.equal('BODY', chunk_info.chunk_id)
-    assert.is.equal(0, chunk_info.chunk_length)
-  end)
+      assert.is.equal('BODY', chunk_info.chunk_id)
+      assert.is.equal(0, chunk_info.chunk_length)
+    end)
 
-  it('should return an error when the BODY chunk is not found', function()
-    local iff_file_parser = IffFileParser:new(test_data.BYTES_WITHOUT_BODY_CHUNK)
+    it('should return an error when the BODY chunk is not found', function()
+      local iff_file_parser = IffFileParser:new(test_data.BYTES_WITHOUT_BODY_CHUNK)
 
-    assert.has_error(function()
-      chunk_info = iff_file_parser:find_body_chunk_info()
-    end, IffFileParser.ERROR_BODY_CHUNK_NOT_FOUND)
+      assert.has_error(function()
+        chunk_info = iff_file_parser:find_body_chunk_info()
+      end, IffFileParser.ERROR_BODY_CHUNK_NOT_FOUND)
+    end)
   end)
 end)
