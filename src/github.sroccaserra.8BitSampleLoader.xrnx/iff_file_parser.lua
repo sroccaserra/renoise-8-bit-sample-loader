@@ -1,10 +1,12 @@
 local FORM_CHUNK_NB_BYTES = 12
-local VHDR_CHUNK_NB_BYTES = 28
+local ID_AND_LENGTH_NB_BYTES = 8
 
 ---
 -- Class IffFileParser
 
-local IffFileParser = {}
+local IffFileParser = {
+  ERROR_BODY_CHUNK_NOT_FOUND = 'Error: BODY chunk not found.'
+}
 IffFileParser.__index = IffFileParser
 
 function IffFileParser:new(iff_file_bytes)
@@ -19,7 +21,8 @@ end
 
 function IffFileParser:get_form_chunk_info()
   local chunk_id, chunk_length = self:_read_id_and_length(1)
-  local file_type_id = string.sub(self.bytes, 9, 12)
+  local file_type_id = string.sub(self.bytes, ID_AND_LENGTH_NB_BYTES + 1,
+                                              ID_AND_LENGTH_NB_BYTES + 4)
 
   return {
     chunk_id = chunk_id,
@@ -36,6 +39,24 @@ function IffFileParser:get_vhdr_chunk_info()
     chunk_id = chunk_id,
     chunk_length = chunk_length,
     sample_rate = sample_rate
+  }
+end
+
+function IffFileParser:find_body_chunk_info()
+  local start_byte_number = FORM_CHUNK_NB_BYTES + 1
+  local chunk_id, chunk_length = self:_read_id_and_length(start_byte_number)
+
+  while chunk_id ~= 'BODY' do
+    start_byte_number = start_byte_number + ID_AND_LENGTH_NB_BYTES + chunk_length
+    if start_byte_number + ID_AND_LENGTH_NB_BYTES - 1 > #self.bytes then
+      error(IffFileParser.ERROR_BODY_CHUNK_NOT_FOUND)
+    end
+    chunk_id, chunk_length = self:_read_id_and_length(start_byte_number)
+  end
+
+  return {
+    chunk_id = chunk_id,
+    chunk_length = chunk_length
   }
 end
 

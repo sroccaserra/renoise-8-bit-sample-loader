@@ -16,7 +16,7 @@ See also:
 
 ## TODO
 
-There is still a long way to go to load an IFF file:
+There is still a little work to do to load an IFF file:
 
 ```
 - [X] Learn how to script Renoise for dummies
@@ -24,7 +24,7 @@ There is still a long way to go to load an IFF file:
 - [X] Warn for unsupported file types and quit
 - [X] Setup test environment for a quicker feedback
 - [X] Parse sample rate info from the VHDR chunk
-- [ ] Find the BODY chunk
+- [X] Find the BODY chunk
 - [ ] Load the BODY chunk data to the current sample <-- If I can do that, the project will be ok. If not I'll need some help.
 - [ ] Parse loop info from the VHDR chunk
 - [ ] Set the loop start in the current sample
