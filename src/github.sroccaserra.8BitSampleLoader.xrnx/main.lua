@@ -1,10 +1,12 @@
 -- Renoise script
 
 local IffFileParser = require('iff_file_parser').IffFileParser
+local RawFileParser = require('raw_file_parser').RawFileParser
 
 local BIT_DEPTH = 8
 local NUM_CHANNELS = 1
 local CHANNEL_INDEX = 1
+local DEFAULT_SAMPLE_RATE = 16726
 
 local IS_DEV_MODE = false
 
@@ -14,10 +16,12 @@ local TOOL_MESSAGES = {
   unsupportedFileType = 'The file starts with a FORM chunk, but is not supported.'
 }
 
-local function insert_sample_from_iff_data(file_parser)
-  local sample_rate = file_parser:get_sample_rate()
+---
+--
+local function insert_sample_from_file_parser(file_parser, default_sample_rate, default_sample_name)
+  local sample_rate = file_parser:get_sample_rate() or default_sample_rate
   local nb_frames = file_parser:get_nb_frames()
-  local sample_name = file_parser:get_sample_name() or 'IFF sample'
+  local sample_name = file_parser:get_sample_name() or default_sample_name
   local instrument = renoise.song().selected_instrument
 
   local selected_sample = renoise.song().selected_sample
@@ -46,6 +50,8 @@ local function insert_sample_from_iff_data(file_parser)
   instrument.name = sample_name
 end
 
+---
+--
 local function read_iff_file(filename)
   if IS_DEV_MODE then
     filename = filename or '/Users/sebastien.roccaserra/Music/Amiga/ST-XX_with_conversion/ST-01/strings6'
@@ -86,17 +92,23 @@ local function read_iff_file(filename)
       return
     end
 
-    insert_sample_from_iff_data(iff_file_parser)
+    insert_sample_from_file_parser(iff_file_parser, DEFAULT_SAMPLE_RATE, 'IFF sample')
   else
-    renoise.app():show_status('File type is: RAW (hopefully).')
+    local raw_file_parser = RawFileParser:new(file_bytes)
+    insert_sample_from_file_parser(raw_file_parser, DEFAULT_SAMPLE_RATE, 'RAW sample')
   end
 end
 
+---
+--
 local function tool_show_file_browser()
   local filename = renoise.app():prompt_for_filename_to_read({'*.*'}, 'Choose an 8 bit sample...')
 
   read_iff_file(filename)
 end
+
+---
+-- Adding menu entries
 
 renoise.tool():add_menu_entry {
   name = "Main Menu:Tools:8 bit sample loader:Load IFF audio file...",

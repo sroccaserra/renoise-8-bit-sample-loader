@@ -19,13 +19,14 @@ local ANNO_CHUNK = bytes_from_hex('414e4e4f'..  -- 'ANNO'
                                   '00000010'..  -- 16, chunk length
                                   '50726f547261636b657220322e334100')
 local BODY_CHUNK = bytes_from_hex('424f4459'..  -- 'BODY'
-                                  '00000004'..  -- chunk length
-                                  '007f80ff')   -- sample bytes (representing 0, 127, -128, -1)
+                                  '00000004')   -- chunk length
 
-local IFF_FILE_BYTES = FORM_CHUNK..VHDR_CHUNK..NAME_CHUNK..ANNO_CHUNK..BODY_CHUNK
+local SAMPLE_BYTES = bytes_from_hex('007f80ff') -- 8 bit two's complement representing 0, 127, -128, -1
+
+local IFF_FILE_BYTES = FORM_CHUNK..VHDR_CHUNK..NAME_CHUNK..ANNO_CHUNK..BODY_CHUNK..SAMPLE_BYTES
 
 local IFF_FILE_WITH_EMPTY_BODY = FORM_CHUNK..VHDR_CHUNK..bytes_from_hex('424f445900000000')
-local IFF_FILE_WITHOUT_NAME = FORM_CHUNK..VHDR_CHUNK..BODY_CHUNK
+local IFF_FILE_WITHOUT_NAME = FORM_CHUNK..VHDR_CHUNK..BODY_CHUNK..SAMPLE_BYTES
 
 local BYTES_WITHOUT_BODY_CHUNK = FORM_CHUNK..VHDR_CHUNK..NAME_CHUNK..ANNO_CHUNK
 
@@ -33,5 +34,6 @@ return {
   IFF_FILE_BYTES = IFF_FILE_BYTES,
   IFF_FILE_WITH_EMPTY_BODY = IFF_FILE_WITH_EMPTY_BODY,
   IFF_FILE_WITHOUT_NAME = IFF_FILE_WITHOUT_NAME,
-  BYTES_WITHOUT_BODY_CHUNK = BYTES_WITHOUT_BODY_CHUNK
+  BYTES_WITHOUT_BODY_CHUNK = BYTES_WITHOUT_BODY_CHUNK,
+  SAMPLE_BYTES = SAMPLE_BYTES
 }

@@ -1,23 +1,13 @@
+local FileParserABC = require('file_parser_abc').FileParserABC
+
 local FORM_CHUNK_NB_BYTES = 12
 local ID_AND_LENGTH_NB_BYTES = 8
 
 ---
 -- Class IffFileParser
 
-local IffFileParser = {
-  ERROR_BODY_CHUNK_NOT_FOUND = 'Error: BODY chunk not found.'
-}
-IffFileParser.__index = IffFileParser
-
-function IffFileParser:new(iff_file_bytes)
-  local o = {
-    bytes = iff_file_bytes
-  }
-
-  setmetatable(o, self)
-
-  return o
-end
+local IffFileParser = FileParserABC:new()
+IffFileParser.ERROR_BODY_CHUNK_NOT_FOUND = 'Error: BODY chunk not found.'
 
 function IffFileParser:get_form_chunk_info()
   local chunk_id, chunk_length = self:_read_id_and_length(1)
@@ -107,16 +97,6 @@ function IffFileParser:get_renoise_sample_value(index)
   local signed_char =  self:_read_signed_char(start_byte_number + index - 1)
 
   return signed_char/128
-end
-
-function IffFileParser:_read_signed_char(position)
-  local char = string.byte(self.bytes, position)
-
-  if char < 128 then
-    return char
-  end
-
-  return char - 256
 end
 
 function IffFileParser:_read_id_and_length(start)

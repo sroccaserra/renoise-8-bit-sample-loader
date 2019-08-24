@@ -1,5 +1,3 @@
-local bit = require('bit')
-
 local test_data = require('spec.test_data')
 local bytes_from_hex = require('spec.byte_string_conversions').bytes_from_hex
 
@@ -56,6 +54,7 @@ describe('The VHDR chunk', function()
   end)
 end)
 
+
 describe('The NAME chunk', function()
   it('should find the name chunk', function()
     local iff_file_parser = IffFileParser:new(test_data.IFF_FILE_BYTES)
@@ -73,6 +72,7 @@ describe('The NAME chunk', function()
     assert.is_nil(sample_name)
   end)
 end)
+
 
 describe('The BODY chunk', function()
   describe('Main behaviour', function()
@@ -95,34 +95,34 @@ describe('The BODY chunk', function()
       assert.is.equal(4, nb_frames)
     end)
 
-    it('should return the sample bytes', function()
+    it('should read the sample bytes', function()
       local sample_bytes = iff_file_parser:get_sample_bytes()
 
       assert.is.equal(bytes_from_hex('007f80ff'), sample_bytes)
     end)
 
-    it('should return the first sample byte as integer', function()
-      local value = iff_file_parser:get_renoise_sample_value(1)
+    it('should read the first sample byte as integer', function()
+      local value_0 = iff_file_parser:get_renoise_sample_value(1)
 
-      assert.is.equal(0, value)
+      assert.is.equal(0, value_0)
     end)
 
-    it('should return the second sample byte as integer', function()
-      local value = iff_file_parser:get_renoise_sample_value(2)
+    it('should read the second sample byte as integer', function()
+      local value_127 = iff_file_parser:get_renoise_sample_value(2)
 
-      assert.is.equal(0.9921875, value)
+      assert.is.equal(0.9921875, value_127)
     end)
 
-    it('should return the third sample byte as integer', function()
-      local value = iff_file_parser:get_renoise_sample_value(3)
+    it('should read the third sample byte as integer', function()
+      local value_minus_128 = iff_file_parser:get_renoise_sample_value(3)
 
-      assert.is.equal(-1, value)
+      assert.is.equal(-1, value_minus_128)
     end)
 
-    it('should return the fourth sample byte as integer', function()
-      local value = iff_file_parser:get_renoise_sample_value(4)
+    it('should read the fourth sample byte as integer', function()
+      local value_minus_one = iff_file_parser:get_renoise_sample_value(4)
 
-      assert.is.equal(-0.0078125, value)
+      assert.is.equal(-0.0078125, value_minus_one)
     end)
   end)
 

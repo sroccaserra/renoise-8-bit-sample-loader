@@ -1,8 +1,16 @@
 Tentative Renoise tool to load 8 bit samples from the Amiga era (IFF and RAW 8 bit signed mono PCM only).
 
-`/!\` Warning: this only allows to load IFF sample data at the moment, without
-looping or octave info. I am not sure I have the time or skills to finish this.
-If you whish to help, please contact me or make a pull request.
+This tool allows to load RAW or IFF sample data at the moment, without looping
+or octave info.
+
+Loading the sample data looks alright, reviews and some tests are welcome :)
+
+`/!\` Warning: I have doubts about the number conversion, see the bit about the
+signed char in the TODO section. If you know for certain how it should be done,
+please contact me.
+
+`/!\` Warning: I am not sure I have the time or skills to finish this.  If you
+whish to help, please contact me or make a pull request.
 
 If you wonder what a sample from the Amiga era is, you can look here:
 
@@ -17,9 +25,6 @@ See also:
 
 ## TODO
 
-Loading the sample data looks alright, reviews and some tests are welcome :)
-The remaining question I have is about the number conversion.
-
 ```
 - [X] Learn how to script Renoise for dummies
 - [X] Parse the FORM chunk
@@ -28,6 +33,7 @@ The remaining question I have is about the number conversion.
 - [X] Parse sample rate info from the VHDR chunk
 - [X] Find the BODY chunk
 - [X] Load the BODY chunk data to the current sample <-- If I can do that, the project will be ok. If not I'll need some help.
+- [X] Allow to load a RAW file
 - [ ] Check the signed char [-128, 127] to Lua [-1, 1] float conversion. How can it be right ?
 - [ ] Parse loop info from the VHDR chunk
 - [ ] Set the loop start in the current sample
@@ -37,7 +43,6 @@ The remaining question I have is about the number conversion.
 Then maybe:
 
 ```
-- [ ] Allow to load a RAW file
 - [ ] Allow to select sample rate for RAW files
 - [ ] Support many octaves from IFF files (add slices in Renoise?)
 ```
