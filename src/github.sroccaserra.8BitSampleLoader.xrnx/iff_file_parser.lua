@@ -42,11 +42,11 @@ function IffFileParser:get_vhdr_chunk_info()
   }
 end
 
-function IffFileParser:find_body_chunk_info()
+function IffFileParser:find_chunk_info(wanted_chunk_id)
   local start_byte_number = FORM_CHUNK_NB_BYTES + 1
   local chunk_id, chunk_length = self:_read_id_and_length(start_byte_number)
 
-  while chunk_id ~= 'BODY' do
+  while chunk_id ~= wanted_chunk_id do
     start_byte_number = start_byte_number + ID_AND_LENGTH_NB_BYTES + chunk_length
     if start_byte_number + ID_AND_LENGTH_NB_BYTES - 1 > #self.bytes then
       error(IffFileParser.ERROR_BODY_CHUNK_NOT_FOUND)
@@ -59,6 +59,10 @@ function IffFileParser:find_body_chunk_info()
     chunk_length = chunk_length,
     start_byte_number = start_byte_number
   }
+end
+
+function IffFileParser:find_body_chunk_info()
+  return self:find_chunk_info('BODY')
 end
 
 function IffFileParser:get_sample_bytes()
@@ -78,6 +82,22 @@ function IffFileParser:get_nb_frames()
   local body_chunk_info = self:find_body_chunk_info()
 
   return body_chunk_info.chunk_length
+end
+
+function IffFileParser:get_sample_name()
+  local status, name_chunk_info = pcall(function()
+    return self:find_chunk_info('NAME')
+  end)
+
+  if not status then
+    return
+  end
+
+  local name_start = name_chunk_info.start_byte_number + ID_AND_LENGTH_NB_BYTES
+  local name_end = name_start + name_chunk_info.chunk_length
+  local name_bytes = string.sub(self.bytes, name_start, name_end)
+
+  return string.gsub(name_bytes, '%z.*', '')
 end
 
 function IffFileParser:get_renoise_sample_value(index)

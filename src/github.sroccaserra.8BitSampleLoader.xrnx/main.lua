@@ -17,11 +17,12 @@ local TOOL_MESSAGES = {
 local function insert_sample_from_iff_data(file_parser)
   local sample_rate = file_parser:get_sample_rate()
   local nb_frames = file_parser:get_nb_frames()
+  local sample_name = file_parser:get_sample_name() or 'IFF sample'
+  local instrument = renoise.song().selected_instrument
 
   local selected_sample = renoise.song().selected_sample
 
   if not selected_sample then
-    local instrument = renoise.song().selected_instrument
     selected_sample = instrument:insert_sample_at(1)
   end
 
@@ -40,6 +41,9 @@ local function insert_sample_from_iff_data(file_parser)
   end
 
   sample_buffer:finalize_sample_data_changes()
+
+  selected_sample.name = sample_name
+  instrument.name = sample_name
 end
 
 local function read_iff_file(filename)

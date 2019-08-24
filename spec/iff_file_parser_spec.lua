@@ -56,6 +56,24 @@ describe('The VHDR chunk', function()
   end)
 end)
 
+describe('The NAME chunk', function()
+  it('should find the name chunk', function()
+    local iff_file_parser = IffFileParser:new(test_data.IFF_FILE_BYTES)
+
+    local sample_name = iff_file_parser:get_sample_name()
+
+    assert.is.equal('st-01:strings6', sample_name)
+  end)
+
+  it('should return nil if name is not found', function()
+    local iff_file_parser = IffFileParser:new(test_data.IFF_FILE_WITHOUT_NAME)
+
+    local sample_name = iff_file_parser:get_sample_name()
+
+    assert.is_nil(sample_name)
+  end)
+end)
+
 describe('The BODY chunk', function()
   describe('Main behaviour', function()
     local iff_file_parser
