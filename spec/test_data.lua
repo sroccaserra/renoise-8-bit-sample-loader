@@ -20,7 +20,7 @@ local ANNO_CHUNK = bytes_from_hex('414e4e4f'..  -- 'ANNO'
                                   '50726f547261636b657220322e334100')
 local BODY_CHUNK = bytes_from_hex('424f4459'..  -- 'BODY'
                                   '00000004'..  -- chunk length
-                                  '41424344')   -- chunk data ('ABCD')
+                                  '007f80ff')   -- sample bytes (representing 0, 127, -128, -1)
 
 local IFF_FILE_BYTES = FORM_CHUNK..VHDR_CHUNK..NAME_CHUNK..ANNO_CHUNK..BODY_CHUNK
 local IFF_FILE_WITH_EMPTY_BODY = FORM_CHUNK..VHDR_CHUNK..bytes_from_hex('424f445900000000')

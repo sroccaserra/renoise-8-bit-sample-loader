@@ -61,11 +61,30 @@ function IffFileParser:find_body_chunk_info()
   }
 end
 
-function IffFileParser:get_sample_data()
+function IffFileParser:get_sample_bytes()
   local body_chunk_info = self:find_body_chunk_info()
   local start_byte_number = body_chunk_info.start_byte_number + ID_AND_LENGTH_NB_BYTES
 
   return string.sub(self.bytes, start_byte_number, start_byte_number + body_chunk_info.chunk_length)
+end
+
+function IffFileParser:get_renoise_sample_value(index)
+  local body_chunk_info = self:find_body_chunk_info()
+  local start_byte_number = body_chunk_info.start_byte_number + ID_AND_LENGTH_NB_BYTES
+
+  local signed_char =  self:_read_signed_char(start_byte_number + index - 1)
+
+  return signed_char/128
+end
+
+function IffFileParser:_read_signed_char(position)
+  local char = string.byte(self.bytes, position)
+
+  if char < 128 then
+    return char
+  end
+
+  return char - 256
 end
 
 function IffFileParser:_read_id_and_length(start)

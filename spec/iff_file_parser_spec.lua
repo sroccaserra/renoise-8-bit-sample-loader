@@ -1,6 +1,7 @@
 local bit = require('bit')
 
 local test_data = require('spec.test_data')
+local bytes_from_hex = require('spec.byte_string_conversions').bytes_from_hex
 
 package.path = 'src/github.sroccaserra.8BitSampleLoader.xrnx/?.lua;'..package.path
 local IffFileParser = require('iff_file_parser').IffFileParser
@@ -66,10 +67,34 @@ describe('The BODY chunk', function()
       assert.is.equal(4, chunk_info.chunk_length)
     end)
 
-    it('should return the sample data', function()
-      local sample_data = iff_file_parser:get_sample_data()
+    it('should return the sample bytes', function()
+      local sample_bytes = iff_file_parser:get_sample_bytes()
 
-      assert.is.equal('ABCD', sample_data)
+      assert.is.equal(bytes_from_hex('007f80ff'), sample_bytes)
+    end)
+
+    it('should return the first sample byte as integer', function()
+      local value = iff_file_parser:get_renoise_sample_value(1)
+
+      assert.is.equal(0, value)
+    end)
+
+    it('should return the second sample byte as integer', function()
+      local value = iff_file_parser:get_renoise_sample_value(2)
+
+      assert.is.equal(0.9921875, value)
+    end)
+
+    it('should return the third sample byte as integer', function()
+      local value = iff_file_parser:get_renoise_sample_value(3)
+
+      assert.is.equal(-1, value)
+    end)
+
+    it('should return the fourth sample byte as integer', function()
+      local value = iff_file_parser:get_renoise_sample_value(4)
+
+      assert.is.equal(-0.0078125, value)
     end)
   end)
 
