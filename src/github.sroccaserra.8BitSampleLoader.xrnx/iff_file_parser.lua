@@ -107,7 +107,8 @@ end
 function IffFileParser:get_loop_start_frame()
   local vhdr_chunk_info = self:get_vhdr_chunk_info()
 
-  if vhdr_chunk_info.repeat_high_samples == 0 then
+  if vhdr_chunk_info.repeat_high_samples == 0 or
+     vhdr_chunk_info.one_shot_high_samples == 0 then
     return nil
   end
 
