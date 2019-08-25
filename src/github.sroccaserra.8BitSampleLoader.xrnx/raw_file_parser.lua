@@ -19,6 +19,10 @@ function RawFileParser:get_renoise_sample_value(index)
   return signed_char/128
 end
 
+function RawFileParser:get_loop_start_frame()
+  return nil
+end
+
 function RawFileParser:get_sample_name()
   return nil
 end

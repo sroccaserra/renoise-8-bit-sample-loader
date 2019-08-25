@@ -23,12 +23,16 @@ end
 
 function IffFileParser:get_vhdr_chunk_info()
   local chunk_id, chunk_length = self:_read_id_and_length(FORM_CHUNK_NB_BYTES + 1)
+  local one_shot_high_samples = self:_read_ulong(FORM_CHUNK_NB_BYTES + ID_AND_LENGTH_NB_BYTES + 1)
+  local repeat_high_samples = self:_read_ulong(FORM_CHUNK_NB_BYTES + ID_AND_LENGTH_NB_BYTES + 5)
   local sample_rate = self:_read_uword(FORM_CHUNK_NB_BYTES + 21)
 
   return {
     chunk_id = chunk_id,
     chunk_length = chunk_length,
-    sample_rate = sample_rate
+    sample_rate = sample_rate,
+    one_shot_high_samples = one_shot_high_samples,
+    repeat_high_samples = repeat_high_samples
   }
 end
 
@@ -97,6 +101,16 @@ function IffFileParser:get_renoise_sample_value(index)
   local signed_char =  self:_read_signed_char(start_byte_number + index - 1)
 
   return signed_char/128
+end
+
+function IffFileParser:get_loop_start_frame()
+  local vhdr_chunk_info = self:get_vhdr_chunk_info()
+
+  if vhdr_chunk_info.repeat_high_samples == 0 then
+    return nil
+  end
+
+  return vhdr_chunk_info.one_shot_high_samples + 1
 end
 
 function IffFileParser:_read_id_and_length(start)

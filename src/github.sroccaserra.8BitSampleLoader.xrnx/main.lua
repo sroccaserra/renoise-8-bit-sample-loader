@@ -46,6 +46,14 @@ local function insert_sample_from_file_parser(file_parser, default_sample_rate, 
 
   sample_buffer:finalize_sample_data_changes()
 
+  local loop_start_frame = file_parser:get_loop_start_frame()
+  if loop_start_frame then
+    selected_sample.loop_mode = renoise.Sample.LOOP_MODE_FORWARD
+    selected_sample.loop_start = loop_start_frame
+  else
+    selected_sample.loop_mode = renoise.Sample.LOOP_MODE_OFF
+  end
+
   selected_sample.name = sample_name
   instrument.name = sample_name
 end
@@ -104,6 +112,10 @@ end
 local function tool_show_file_browser()
   local filename = renoise.app():prompt_for_filename_to_read({'*.*'}, 'Choose an 8 bit sample...')
 
+  if not filename then
+    return
+  end
+
   read_iff_file(filename)
 end
 
@@ -111,7 +123,7 @@ end
 -- Adding menu entries
 
 renoise.tool():add_menu_entry {
-  name = "Main Menu:Tools:8 bit sample loader:Load IFF audio file...",
+  name = "Main Menu:Tools:8 bit sample loader:Load IFF or RAW audio file...",
   invoke = tool_show_file_browser
 }
 
@@ -119,5 +131,10 @@ if IS_DEV_MODE then
   renoise.tool():add_menu_entry {
     name = "Main Menu:Tools:8 bit sample loader:Read IFF file",
     invoke = read_iff_file
+  }
+
+  renoise.tool():add_menu_entry {
+    name = "Disk Browser Files:Load IFF or RAW audio file...",
+    invoke = tool_show_file_browser
   }
 end

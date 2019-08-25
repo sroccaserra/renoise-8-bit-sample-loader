@@ -1,8 +1,5 @@
 Tentative Renoise tool to load 8 bit samples from the Amiga era (IFF and RAW 8 bit signed mono PCM only).
 
-This tool allows to load RAW or IFF sample data at the moment, without looping
-or octave info.
-
 Loading the sample data looks alright, reviews and some tests are welcome :)
 
 `/!\` Warning: I have doubts about the number conversion, see the bit about the
@@ -20,8 +17,34 @@ If you wonder what a sample from the Amiga era is, you can look here:
 
 See also:
 
-- <https://forum.renoise.com/t/the-original-amiga-soundtracker-sample-disks/39473/22>
 - <https://gist.github.com/sroccaserra/5bacbdb3e000a54dbae0972c346021d4>
+- <https://forum.renoise.com/t/the-original-amiga-soundtracker-sample-disks/39473/22>
+- <https://forum.renoise.com/t/tool-to-load-8-bit-samples-from-the-amiga-era-iff-and-raw-8-bit-signed-mono-pcm-only/58002>
+
+## Installation
+
+Download or clone this repository's content, then drag and drop the
+`github.sroccaserra.8BitSampleLoader.xrnx` folder on Renoise.
+
+Note: the `github.sroccaserra.8BitSampleLoader.xrnx` folder is in the `src`
+folder.
+
+## How to use
+
+After installation, this tool adds a _8 bit sample loader > Load IFF or RAW
+file..._ menu entry to the _Tools_ menu.
+
+Clicking on it opens a file browser. Selecting an IFF or RAW 8 bit signed mono
+file will load it in the current instrument's current sample.
+
+For IFF files: sample rate, loop start info, and sample name are used if
+present. Octaves and compression are not supported (maybe a nice addition).
+
+For RAW files: a sample rate of 16726 Hz is assumed (allow to customize this
+would be a nice addition).
+
+Tip: try turning off interpolation in the sample options for that extra 8 bit
+noise. After that you can try a ~ 7 kHz low pass filter to tame some of it.
 
 ## TODO
 
@@ -32,17 +55,23 @@ See also:
 - [X] Setup test environment for a quicker feedback
 - [X] Parse sample rate info from the VHDR chunk
 - [X] Find the BODY chunk
-- [X] Load the BODY chunk data to the current sample <-- If I can do that, the project will be ok. If not I'll need some help.
+- [X] Load the BODY chunk data to the current sample <-- If I can do that, the
+  project will be ok. If not I'll need some help.
 - [X] Allow to load a RAW file
-- [ ] Check the signed char [-128, 127] to Lua [-1, 1] float conversion. How can it be right ?
-- [ ] Parse loop info from the VHDR chunk
-- [ ] Set the loop start in the current sample
-- [ ] Deal with variable chunk order (or check that the VHDR chunk always starts at byte 13)
+- [X] Parse loop info from the VHDR chunk
+- [X] Set the loop start in the current sample
+- [ ] Check the signed char [-128, 127] to Lua [-1, 1] float conversion. How
+  can it be right ?
+- [ ] Deal with variable chunk order (or check that the VHDR chunk always
+  starts at byte 13)
+- [ ] More checks!
+- [ ] More error messages!
 ```
 
 Then maybe:
 
 ```
+- [ ] Add a right-click option to load the file from the disk browser panel
 - [ ] Allow to select sample rate for RAW files
 - [ ] Support many octaves from IFF files (add slices in Renoise?)
 ```
@@ -75,6 +104,7 @@ About Renoise script development:
 - <https://github.com/renoise/xrnx>
 - <https://files.renoise.com/xrnx/documentation/>
 - <https://files.renoise.com/xrnx/documentation/Renoise.Song.API.lua.html#h2_97>
+- <https://files.renoise.com/xrnx/documentation/Renoise.ScriptingTool.API.lua.html>
 
 About Lua and Luajit:
 

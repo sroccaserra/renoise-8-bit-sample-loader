@@ -45,12 +45,24 @@ describe('The VHDR chunk', function()
     assert.is.equal(20, chunk_info.chunk_length)
   end)
 
+  it('should read the one shot high sample number from the vhdr chunk', function()
+    assert.is.equal(0x628, chunk_info.one_shot_high_samples)
+  end)
+
+  it('should read the repeat sample number from the vhdr chunk', function()
+    assert.is.equal(0x1ee8, chunk_info.repeat_high_samples)
+  end)
+
   it('should read the sample rate from the VHDR chunk', function()
     assert.is.equal(16726, chunk_info.sample_rate)
   end)
 
   it('should read the sample rate', function()
     assert.is.equal(16726, iff_file_parser:get_sample_rate())
+  end)
+
+  it('should find the loop start', function()
+    assert.is.equal(0x628 + 1, iff_file_parser:get_loop_start_frame())
   end)
 end)
 

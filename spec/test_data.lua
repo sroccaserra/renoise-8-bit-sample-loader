@@ -8,7 +8,7 @@ local VHDR_CHUNK = bytes_from_hex('56484452'..  -- 'VHDR'
                                   '00000628'..  -- oneShotHiSamples
                                   '00001ee8'..  -- repeatHiSamples
                                   '00000020'..  -- samplesPerHiCycle
-                                  '4156'..      -- samplesPerSec = data sampling rate
+                                  '4156'..      -- 16726, samplesPerSec = data sampling rate
                                   '01'..        -- ctOctave
                                   '00'..        -- sCompression
                                   '00010000')   -- volume (16+16 bits fixed point), 00010000 = 0.1 (maximum in the IFF spec)

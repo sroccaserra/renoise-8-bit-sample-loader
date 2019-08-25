@@ -26,6 +26,10 @@ function FileParserABC:get_renoise_sample_value(index)
   error('Subclass responsibility.')
 end
 
+function FileParserABC:get_loop_start_frame()
+  error('Subclass responsibility')
+end
+
 function FileParserABC:get_sample_name(index)
   error('Subclass responsibility.')
 end
