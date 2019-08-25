@@ -107,6 +107,13 @@ describe('The BODY chunk', function()
       assert.is.equal(4, nb_frames)
     end)
 
+    it('should truncate the number of frames to the file size', function()
+      local iff_file_parser = IffFileParser:new(test_data.IFF_FILE_WITH_TRUNCATED_SAMPLE_DATA)
+      local nb_frames = iff_file_parser:get_nb_frames()
+
+      assert.is.equal(4, nb_frames)
+    end)
+
     it('should read the sample bytes', function()
       local sample_bytes = iff_file_parser:get_sample_bytes()
 

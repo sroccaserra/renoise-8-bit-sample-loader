@@ -74,8 +74,9 @@ end
 
 function IffFileParser:get_nb_frames()
   local body_chunk_info = self:find_body_chunk_info()
+  local remaining_file_size = #self.bytes + 1 - body_chunk_info.start_byte_number - ID_AND_LENGTH_NB_BYTES
 
-  return body_chunk_info.chunk_length
+  return math.min(body_chunk_info.chunk_length, remaining_file_size)
 end
 
 function IffFileParser:get_sample_name()
