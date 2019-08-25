@@ -1,5 +1,8 @@
 local bytes_from_hex = require('spec.byte_string_conversions').bytes_from_hex
 
+---
+-- IFF file bytes
+
 local FORM_CHUNK = bytes_from_hex('464f524d'..  -- 'FORM'
                                   '0000003c'..  -- 60, chunk length after this ulong (the file size minus 8)
                                   '38535658')   -- '8SVX'
@@ -27,13 +30,33 @@ local IFF_FILE_BYTES = FORM_CHUNK..VHDR_CHUNK..NAME_CHUNK..ANNO_CHUNK..BODY_CHUN
 
 local IFF_FILE_WITH_EMPTY_BODY = FORM_CHUNK..VHDR_CHUNK..bytes_from_hex('424f445900000000')
 local IFF_FILE_WITHOUT_NAME = FORM_CHUNK..VHDR_CHUNK..BODY_CHUNK..SAMPLE_BYTES
+local IFF_FILE_WITHOUT_FORM_CHUNK = bytes_from_hex('38535658')..VHDR_CHUNK..BODY_CHUNK..SAMPLE_BYTES
 
 local BYTES_WITHOUT_BODY_CHUNK = FORM_CHUNK..VHDR_CHUNK..NAME_CHUNK..ANNO_CHUNK
+
+---
+-- Typical AIFF file first bytes
+
+local AIFF_FILE_BYTES = bytes_from_hex('464f524d'..  -- 'FORM'
+                                       '00001ea6'..  -- chunk length after this ulong
+                                       '41494646')   -- 'AIFF'
+
+---
+-- Typical WAVE file first bytes
+
+local WAVE_FILE_BYTES = bytes_from_hex('52494646'..  -- 'RIFF'
+                                       'ce260000'..  -- little endian stuff
+                                       '57415645')   -- 'WAVE'
 
 return {
   IFF_FILE_BYTES = IFF_FILE_BYTES,
   IFF_FILE_WITH_EMPTY_BODY = IFF_FILE_WITH_EMPTY_BODY,
   IFF_FILE_WITHOUT_NAME = IFF_FILE_WITHOUT_NAME,
+  IFF_FILE_WITHOUT_FORM_CHUNK = IFF_FILE_WITHOUT_FORM_CHUNK,
+
   BYTES_WITHOUT_BODY_CHUNK = BYTES_WITHOUT_BODY_CHUNK,
-  SAMPLE_BYTES = SAMPLE_BYTES
+  SAMPLE_BYTES = SAMPLE_BYTES,
+
+  AIFF_FILE_BYTES = AIFF_FILE_BYTES,
+  WAVE_FILE_BYTES = WAVE_FILE_BYTES,
 }

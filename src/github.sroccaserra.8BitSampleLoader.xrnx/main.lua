@@ -1,5 +1,6 @@
 -- Renoise script
 
+local FileTypeAnalyzer = require('file_type_analyzer').FileTypeAnalyzer
 local IffFileParser = require('iff_file_parser').IffFileParser
 local RawFileParser = require('raw_file_parser').RawFileParser
 
@@ -82,24 +83,20 @@ local function read_iff_file(filename)
     end
   end
 
-  local iff_file_parser = IffFileParser:new(file_bytes)
-  local form_chunk_info = iff_file_parser:get_form_chunk_info()
+  local file_type_analyzer = FileTypeAnalyzer:new(file_bytes)
 
-  if form_chunk_info.chunk_id == 'RIFF' then
+  if file_type_analyzer:is_wave_file() then
     renoise.app():show_message(TOOL_MESSAGES.unsupportedWaveFile)
     return
   end
 
-  if form_chunk_info.chunk_id == 'FORM' then
-    if form_chunk_info.file_type_id == 'AIFF' then
-      renoise.app():show_message(TOOL_MESSAGES.unsupportedAiffFile)
-      return
-    end
-    if form_chunk_info.file_type_id ~= '8SVX' then
-      renoise.app():show_message(TOOL_MESSAGES.unsupportedFileType)
-      return
-    end
+  if file_type_analyzer:is_aiff_file() then
+    renoise.app():show_message(TOOL_MESSAGES.unsupportedAiffFile)
+    return
+  end
 
+  if file_type_analyzer:is_iff_file() then
+    local iff_file_parser = IffFileParser:new(file_bytes)
     insert_sample_from_file_parser(iff_file_parser, DEFAULT_SAMPLE_RATE, 'IFF sample')
   else
     local raw_file_parser = RawFileParser:new(file_bytes)
