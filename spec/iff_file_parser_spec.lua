@@ -41,6 +41,13 @@ describe('The VHDR chunk', function()
     assert.is.equal('VHDR', chunk_info.chunk_id)
   end)
 
+  it('should find the VHDR chunk even in an unusual position', function()
+    local iff_file_parser = IffFileParser:new(test_data.IFF_FILE_WITH_VHDR_IN_UNUSUAL_POSITION)
+    local chunk_info = iff_file_parser:get_vhdr_chunk_info()
+
+    assert.is.equal('VHDR', chunk_info.chunk_id)
+  end)
+
   it('should read the chunk length', function()
     assert.is.equal(20, chunk_info.chunk_length)
   end)
@@ -157,10 +164,11 @@ describe('The BODY chunk', function()
 
     it('should return an error when the BODY chunk is not found', function()
       local iff_file_parser = IffFileParser:new(test_data.BYTES_WITHOUT_BODY_CHUNK)
+      local expected_error_message = string.format(IffFileParser.ERROR_CHUNK_NOT_FOUND, 'BODY')
 
       assert.has_error(function()
         chunk_info = iff_file_parser:find_body_chunk_info()
-      end, IffFileParser.ERROR_BODY_CHUNK_NOT_FOUND)
+      end, expected_error_message)
     end)
   end)
 end)

@@ -60,10 +60,11 @@ noise. After that you can try a ~ 7 kHz low pass filter to tame some of it.
 - [X] Allow to load a RAW file
 - [X] Parse loop info from the VHDR chunk
 - [X] Set the loop start in the current sample
+- [X] Deal with variable chunk order (or check that the VHDR chunk always
+  starts at byte 13) - short answer: it doesn't :(
+- [ ] Deal with BODY only files (no sample rate or looping info)
 - [ ] Check the signed char [-128, 127] to Lua [-1, 1] float conversion. How
   can it be right ?
-- [ ] Deal with variable chunk order (or check that the VHDR chunk always
-  starts at byte 13)
 - [ ] More checks!
 - [ ] More error messages!
 ```

@@ -7,7 +7,7 @@ local ID_AND_LENGTH_NB_BYTES = 8
 -- Class IffFileParser
 
 local IffFileParser = FileParserABC:new()
-IffFileParser.ERROR_BODY_CHUNK_NOT_FOUND = 'Error: BODY chunk not found.'
+IffFileParser.ERROR_CHUNK_NOT_FOUND = 'Error: chunk "%s" not found'
 
 function IffFileParser:get_form_chunk_info()
   local chunk_id, chunk_length = self:_read_id_and_length(1)
@@ -22,14 +22,17 @@ function IffFileParser:get_form_chunk_info()
 end
 
 function IffFileParser:get_vhdr_chunk_info()
-  local chunk_id, chunk_length = self:_read_id_and_length(FORM_CHUNK_NB_BYTES + 1)
-  local one_shot_high_samples = self:_read_ulong(FORM_CHUNK_NB_BYTES + ID_AND_LENGTH_NB_BYTES + 1)
-  local repeat_high_samples = self:_read_ulong(FORM_CHUNK_NB_BYTES + ID_AND_LENGTH_NB_BYTES + 5)
-  local sample_rate = self:_read_uword(FORM_CHUNK_NB_BYTES + 21)
+  local chunk_info = self:find_chunk_info('VHDR')
+  local data_start_byte = chunk_info.start_byte_number + ID_AND_LENGTH_NB_BYTES
+
+  local one_shot_high_samples = self:_read_ulong(data_start_byte)
+  local repeat_high_samples = self:_read_ulong(data_start_byte + 4)
+  local sample_rate = self:_read_uword(data_start_byte + 12)
 
   return {
-    chunk_id = chunk_id,
-    chunk_length = chunk_length,
+    chunk_id = chunk_info.chunk_id,
+    chunk_length = chunk_info.chunk_length,
+
     sample_rate = sample_rate,
     one_shot_high_samples = one_shot_high_samples,
     repeat_high_samples = repeat_high_samples
@@ -37,13 +40,14 @@ function IffFileParser:get_vhdr_chunk_info()
 end
 
 function IffFileParser:find_chunk_info(wanted_chunk_id)
-  local start_byte_number = FORM_CHUNK_NB_BYTES + 1
+  local start_byte_number = self:_find_first_known_chunk()
   local chunk_id, chunk_length = self:_read_id_and_length(start_byte_number)
 
   while chunk_id ~= wanted_chunk_id do
     start_byte_number = start_byte_number + ID_AND_LENGTH_NB_BYTES + chunk_length
     if start_byte_number + ID_AND_LENGTH_NB_BYTES - 1 > #self.bytes then
-      error(IffFileParser.ERROR_BODY_CHUNK_NOT_FOUND)
+      local error_message = string.format(IffFileParser.ERROR_CHUNK_NOT_FOUND, wanted_chunk_id)
+      error(error_message)
     end
     chunk_id, chunk_length = self:_read_id_and_length(start_byte_number)
   end
@@ -113,6 +117,11 @@ function IffFileParser:get_loop_start_frame()
   end
 
   return vhdr_chunk_info.one_shot_high_samples + 1
+end
+
+function IffFileParser:_find_first_known_chunk()
+  local start = string.find(self.bytes, 'VHDR')
+  return start
 end
 
 function IffFileParser:_read_id_and_length(start)
