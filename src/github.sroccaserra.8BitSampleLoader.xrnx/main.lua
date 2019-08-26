@@ -61,7 +61,7 @@ end
 
 ---
 --
-local function read_iff_file(filename)
+local function load_iff_or_raw_file(filename)
   if IS_DEV_MODE then
     filename = filename or '/Users/sebastien.roccaserra/Music/Amiga/ST-XX_with_conversion/ST-01/strings6'
   end
@@ -81,6 +81,7 @@ local function read_iff_file(filename)
     if err then
       print(err)
     end
+    return
   end
 
   local file_type_analyzer = FileTypeAnalyzer:new(file_bytes)
@@ -113,25 +114,30 @@ local function tool_show_file_browser()
     return
   end
 
-  read_iff_file(filename)
+  load_iff_or_raw_file(filename)
 end
 
 ---
 -- Adding menu entries
 
-renoise.tool():add_menu_entry {
-  name = "Main Menu:Tools:8 bit sample loader:Load IFF or RAW audio file...",
-  invoke = tool_show_file_browser
-}
-
 if IS_DEV_MODE then
   renoise.tool():add_menu_entry {
+    name = "Main Menu:Tools:8 bit sample loader:Load IFF or RAW audio file...",
+    invoke = tool_show_file_browser
+  }
+
+  renoise.tool():add_menu_entry {
     name = "Main Menu:Tools:8 bit sample loader:Read IFF file",
-    invoke = read_iff_file
+    invoke = load_iff_or_raw_file
   }
 
   renoise.tool():add_menu_entry {
     name = "Disk Browser Files:Load IFF or RAW audio file...",
+    invoke = tool_show_file_browser
+  }
+else
+  renoise.tool():add_menu_entry {
+    name = "Main Menu:Tools:Load IFF or RAW audio file...",
     invoke = tool_show_file_browser
   }
 end

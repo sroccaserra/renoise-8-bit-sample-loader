@@ -31,8 +31,8 @@ folder.
 
 ## How to use
 
-After installation, this tool adds a _8 bit sample loader > Load IFF or RAW
-file..._ menu entry to the _Tools_ menu.
+After installation, this tool adds a _Load IFF or RAW file..._ menu entry to
+the _Tools_ menu.
 
 Clicking on it opens a file browser. Selecting an IFF or RAW 8 bit signed mono
 file will load it in the current instrument's current sample.
