@@ -3,7 +3,7 @@ local FileTypeAnalyzer = {}
 
 function FileTypeAnalyzer:new(file_bytes)
   local o = {
-    first_bytes = string.sub(file_bytes, 1, 256)
+    first_bytes = string.sub(file_bytes, 1, 512)
   }
 
   setmetatable(o, self)
