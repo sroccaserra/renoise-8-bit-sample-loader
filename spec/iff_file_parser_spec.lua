@@ -163,11 +163,10 @@ describe('The BODY chunk', function()
     end)
 
     it('should return an error when the BODY chunk is not found', function()
-      local iff_file_parser = IffFileParser:new(test_data.BYTES_WITHOUT_BODY_CHUNK)
       local expected_error_message = string.format(IffFileParser.ERROR_CHUNK_NOT_FOUND, 'BODY')
 
       assert.has_error(function()
-        chunk_info = iff_file_parser:find_body_chunk_info()
+        local iff_file_parser = IffFileParser:new(test_data.BYTES_WITHOUT_BODY_CHUNK)
       end, expected_error_message)
     end)
   end)

@@ -11,6 +11,10 @@ function FileParserABC:new(file_bytes)
   setmetatable(o, self)
   self.__index = self
 
+  if o._init then
+    o:_init()
+  end
+
   return o
 end
 

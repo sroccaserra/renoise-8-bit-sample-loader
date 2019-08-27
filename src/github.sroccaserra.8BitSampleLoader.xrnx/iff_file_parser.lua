@@ -9,6 +9,14 @@ local ID_AND_LENGTH_NB_BYTES = 8
 local IffFileParser = FileParserABC:new()
 IffFileParser.ERROR_CHUNK_NOT_FOUND = 'Error: chunk "%s" not found'
 
+function IffFileParser:_init()
+  local vhdr_chunk_info = self:get_vhdr_chunk_info()
+  self.vhdr_chunk_info = vhdr_chunk_info
+
+  local body_chunk_info = self:find_body_chunk_info()
+  self.body_chunk_info = body_chunk_info
+end
+
 function IffFileParser:get_form_chunk_info()
   local chunk_id, chunk_length = self:_read_id_and_length(1)
   local file_type_id = string.sub(self.bytes, ID_AND_LENGTH_NB_BYTES + 1,
@@ -64,20 +72,20 @@ function IffFileParser:find_body_chunk_info()
 end
 
 function IffFileParser:get_sample_bytes()
-  local body_chunk_info = self:find_body_chunk_info()
+  local body_chunk_info = self.body_chunk_info
   local start_byte_number = body_chunk_info.start_byte_number + ID_AND_LENGTH_NB_BYTES
 
   return string.sub(self.bytes, start_byte_number, start_byte_number + body_chunk_info.chunk_length)
 end
 
 function IffFileParser:get_sample_rate()
-  local vhdr_chunk_info = self:get_vhdr_chunk_info()
+  local vhdr_chunk_info = self.vhdr_chunk_info
 
   return vhdr_chunk_info.sample_rate
 end
 
 function IffFileParser:get_nb_frames()
-  local body_chunk_info = self:find_body_chunk_info()
+  local body_chunk_info = self.body_chunk_info
   local remaining_file_size = #self.bytes + 1 - body_chunk_info.start_byte_number - ID_AND_LENGTH_NB_BYTES
 
   return math.min(body_chunk_info.chunk_length, remaining_file_size)
@@ -100,7 +108,7 @@ function IffFileParser:get_sample_name()
 end
 
 function IffFileParser:get_renoise_sample_value(index)
-  local body_chunk_info = self:find_body_chunk_info()
+  local body_chunk_info = self.body_chunk_info
   local start_byte_number = body_chunk_info.start_byte_number + ID_AND_LENGTH_NB_BYTES
 
   local signed_char =  self:_read_signed_char(start_byte_number + index - 1)
@@ -109,7 +117,7 @@ function IffFileParser:get_renoise_sample_value(index)
 end
 
 function IffFileParser:get_loop_start_frame()
-  local vhdr_chunk_info = self:get_vhdr_chunk_info()
+  local vhdr_chunk_info = self.vhdr_chunk_info
 
   if vhdr_chunk_info.repeat_high_samples == 0 or
      vhdr_chunk_info.one_shot_high_samples == 0 then
