@@ -4,29 +4,45 @@ package.path = 'src/github.sroccaserra.8BitSampleLoader.xrnx/?.lua;'..package.pa
 local FileTypeAnalyzer = require('file_type_analyzer').FileTypeAnalyzer
 
 describe('FileTypeAnalyzer', function()
-  it('should find a well formed IFF file', function()
-    local file_type_analyzer = FileTypeAnalyzer:new(test_data.IFF_FILE_BYTES)
+  describe('IFF files', function()
+    it('should find a well formed IFF file', function()
+      local file_type_analyzer = FileTypeAnalyzer:new(test_data.IFF_FILE_BYTES)
 
-    assert.is_true(file_type_analyzer:is_iff_file())
+      assert.is_true(file_type_analyzer:is_iff_file())
+    end)
+
+    it('should find an IFF file without a FORM chunk', function()
+      local file_type_analyzer = FileTypeAnalyzer:new(test_data.IFF_FILE_WITHOUT_FORM_CHUNK)
+
+      assert.is_true(file_type_analyzer:is_iff_file())
+    end)
+
+    it('should not find an IFF file without a VHDR chunk', function()
+      local file_type_analyzer = FileTypeAnalyzer:new(test_data.IFF_FILE_WITHOUT_VHDR_CHUNK)
+
+      assert.is_false(file_type_analyzer:is_iff_file())
+    end)
+
+    it('should not find an IFF file without a BODY chunk', function()
+      local file_type_analyzer = FileTypeAnalyzer:new(test_data.IFF_FILE_WITHOUT_BODY_CHUNK)
+
+      assert.is_false(file_type_analyzer:is_iff_file())
+    end)
   end)
 
-  it('should find an IFF file without a FORM chunk', function()
-    local file_type_analyzer = FileTypeAnalyzer:new(test_data.IFF_FILE_WITHOUT_FORM_CHUNK)
+  describe('Popular file formats not supported by this tool', function()
+    it('should find an AIFF file', function()
+      local file_type_analyzer = FileTypeAnalyzer:new(test_data.AIFF_FILE_BYTES)
 
-    assert.is_true(file_type_analyzer:is_iff_file())
-  end)
+      assert.is_false(file_type_analyzer:is_iff_file())
+      assert.is_true(file_type_analyzer:is_aiff_file())
+    end)
 
-  it('should find an AIFF file', function()
-    local file_type_analyzer = FileTypeAnalyzer:new(test_data.AIFF_FILE_BYTES)
+    it('should find a WAVE file', function()
+      local file_type_analyzer = FileTypeAnalyzer:new(test_data.WAVE_FILE_BYTES)
 
-    assert.is_false(file_type_analyzer:is_iff_file())
-    assert.is_true(file_type_analyzer:is_aiff_file())
-  end)
-
-  it('should find a WAVE file', function()
-    local file_type_analyzer = FileTypeAnalyzer:new(test_data.WAVE_FILE_BYTES)
-
-    assert.is_false(file_type_analyzer:is_iff_file())
-    assert.is_true(file_type_analyzer:is_wave_file())
+      assert.is_false(file_type_analyzer:is_iff_file())
+      assert.is_true(file_type_analyzer:is_wave_file())
+    end)
   end)
 end)

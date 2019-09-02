@@ -13,7 +13,10 @@ function FileTypeAnalyzer:new(file_bytes)
 end
 
 function FileTypeAnalyzer:is_iff_file()
-  return not not string.match(self.first_bytes, '8SVX')
+  local has_required_vhdr_chunk = not not string.match(self.first_bytes, 'VHDR')
+  local has_required_body_chunk = not not string.match(self.first_bytes, 'BODY')
+
+  return has_required_vhdr_chunk and has_required_body_chunk
 end
 
 function FileTypeAnalyzer:is_aiff_file()
