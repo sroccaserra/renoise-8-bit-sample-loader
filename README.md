@@ -18,7 +18,9 @@ See also:
 
 Tested with:
 
-- Renoise 3.1.1
+- Renoise 3.2
+
+See [this branch](https://github.com/sroccaserra/renoise-8-bit-sample-loader/tree/renoise-3-1-1) for a version tested with Renoise 3.1.1.
 
 Download or clone this repository's content, then drag and drop the
 `github.sroccaserra.8BitSampleLoader.xrnx` folder on Renoise.
