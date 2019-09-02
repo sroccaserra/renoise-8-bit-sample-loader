@@ -2,13 +2,6 @@ Tentative Renoise tool to load 8 bit samples from the Amiga era (IFF and RAW 8 b
 
 Loading the sample data looks alright, reviews and some tests are welcome :)
 
-`/!\` Warning: I have doubts about the number conversion, see the bit about the
-signed char in the TODO section. If you know for certain how it should be done,
-please contact me.
-
-`/!\` Warning: I am not sure I have the time or skills to finish this.  If you
-whish to help, please contact me or make a pull request.
-
 If you wonder what a sample from the Amiga era is, you can look here:
 
 - <https://www.youtube.com/watch?v=t5G3-qG76ho>
@@ -22,6 +15,10 @@ See also:
 - <https://forum.renoise.com/t/tool-to-load-8-bit-samples-from-the-amiga-era-iff-and-raw-8-bit-signed-mono-pcm-only/58002>
 
 ## Installation
+
+Tested with:
+
+- Renoise 3.1.1
 
 Download or clone this repository's content, then drag and drop the
 `github.sroccaserra.8BitSampleLoader.xrnx` folder on Renoise.
