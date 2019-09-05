@@ -14,7 +14,10 @@ local IS_DEV_MODE = false
 local TOOL_MESSAGES = {
   unsupportedWaveFile = 'You are trying to load a WAVE file, this tool is not able to load it. As Renoise supports WAVE files, please load this file the usual way.',
   unsupportedAiffFile = 'You are trying to load an AIFF file, this tool is not able to load it. As Renoise supports AIFF files, please load this file the usual way.',
-  unsupportedFileType = 'The file starts with a FORM chunk, but is not supported.'
+  unsupportedFileType = 'The file starts with a FORM chunk, but is not supported.',
+
+  yes = 'Yes',
+  no = 'No'
 }
 
 ---
@@ -26,9 +29,15 @@ local function insert_sample_from_file_parser(file_parser, default_sample_rate, 
   local instrument = renoise.song().selected_instrument
 
   local selected_sample = renoise.song().selected_sample
-
   if not selected_sample then
     selected_sample = instrument:insert_sample_at(1)
+  end
+
+  if selected_sample.is_slice_alias then
+    instrument:clear()
+    selected_sample = instrument:insert_sample_at(1)
+  else
+    selected_sample:clear()
   end
 
   local sample_buffer = selected_sample.sample_buffer
@@ -57,6 +66,18 @@ local function insert_sample_from_file_parser(file_parser, default_sample_rate, 
 
   selected_sample.name = sample_name
   instrument.name = sample_name
+end
+
+---
+--
+local function ask_should_add_slice(first_frame_position)
+  local title = 'Unexpected BODY marker'
+  local message = 'An unexpected BODY marker was found at byte '..
+                  first_frame_position..
+                  ', do you want to insert a slice at that position?'
+  local answer = renoise.app():show_prompt(title, message, {TOOL_MESSAGES.yes, TOOL_MESSAGES.no})
+
+  return answer == TOOL_MESSAGES.yes
 end
 
 ---
@@ -102,6 +123,14 @@ local function load_iff_or_raw_file(filename)
   else
     local raw_file_parser = RawFileParser:new(file_bytes)
     insert_sample_from_file_parser(raw_file_parser, DEFAULT_SAMPLE_RATE, 'RAW sample')
+
+    if file_type_analyzer:has_late_first_frame() then
+      local first_frame_position = file_type_analyzer:find_first_frame_position()
+      if ask_should_add_slice(first_frame_position) then
+        local selected_sample = renoise.song().selected_sample
+        selected_sample:insert_slice_marker(first_frame_position)
+      end
+    end
   end
 end
 

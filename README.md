@@ -43,6 +43,11 @@ would be a nice addition).
 Tip: try turning off interpolation in the sample options for that extra 8 bit
 noise. After that you can try a ~ 7 kHz low pass filter to tame some of it.
 
+## Docs, learnings and decisions
+
+You can learn more about this project's learnings and decisions in the
+[doc](doc) folder.
+
 ## TODO
 
 ```
@@ -59,7 +64,8 @@ noise. After that you can try a ~ 7 kHz low pass filter to tame some of it.
 - [X] Set the loop start in the current sample
 - [X] Deal with variable chunk order (or check that the VHDR chunk always
   starts at byte 13) - short answer: it doesn't :(
-- [ ] Deal with BODY only files (no sample rate or looping info)
+- [X] Deal with BODY only files (no sample rate or looping info)
+- [ ] Deal with late IFF headers
 - [ ] Check the signed char [-128, 127] to Lua [-1, 1] float conversion. How
   can it be right ?
 - [ ] More checks!
@@ -114,3 +120,5 @@ About the IFF sound file format:
 
 - <https://wiki.amigaos.net/wiki/IFF_Standard>
 - <https://wiki.amigaos.net/wiki/8SVX_IFF_8-Bit_Sampled_Voice>
+- <https://www.exotica.org.uk/wiki/Format_and_Replays>
+- <http://lclevy.free.fr/amiga/formats.html>

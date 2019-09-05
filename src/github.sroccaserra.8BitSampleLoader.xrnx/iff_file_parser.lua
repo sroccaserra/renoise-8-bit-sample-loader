@@ -1,7 +1,7 @@
 local FileParserABC = require('file_parser_abc').FileParserABC
 
 local FORM_CHUNK_NB_BYTES = 12
-local ID_AND_LENGTH_NB_BYTES = 8
+local IFF_ID_AND_LENGTH_NB_BYTES = 8
 
 ---
 -- Class IffFileParser
@@ -19,8 +19,8 @@ end
 
 function IffFileParser:get_form_chunk_info()
   local chunk_id, chunk_length = self:_read_id_and_length(1)
-  local file_type_id = string.sub(self.bytes, ID_AND_LENGTH_NB_BYTES + 1,
-                                              ID_AND_LENGTH_NB_BYTES + 4)
+  local file_type_id = string.sub(self.bytes, IFF_ID_AND_LENGTH_NB_BYTES + 1,
+                                              IFF_ID_AND_LENGTH_NB_BYTES + 4)
 
   return {
     chunk_id = chunk_id,
@@ -31,7 +31,7 @@ end
 
 function IffFileParser:get_vhdr_chunk_info()
   local chunk_info = self:find_chunk_info('VHDR')
-  local data_start_byte = chunk_info.start_byte_number + ID_AND_LENGTH_NB_BYTES
+  local data_start_byte = chunk_info.start_byte_number + IFF_ID_AND_LENGTH_NB_BYTES
 
   local one_shot_high_samples = self:_read_ulong(data_start_byte)
   local repeat_high_samples = self:_read_ulong(data_start_byte + 4)
@@ -52,8 +52,8 @@ function IffFileParser:find_chunk_info(wanted_chunk_id)
   local chunk_id, chunk_length = self:_read_id_and_length(start_byte_number)
 
   while chunk_id ~= wanted_chunk_id do
-    start_byte_number = start_byte_number + ID_AND_LENGTH_NB_BYTES + chunk_length
-    if start_byte_number + ID_AND_LENGTH_NB_BYTES - 1 > #self.bytes then
+    start_byte_number = start_byte_number + IFF_ID_AND_LENGTH_NB_BYTES + chunk_length
+    if start_byte_number + IFF_ID_AND_LENGTH_NB_BYTES - 1 > #self.bytes then
       local error_message = string.format(IffFileParser.ERROR_CHUNK_NOT_FOUND, wanted_chunk_id)
       error(error_message)
     end
@@ -73,7 +73,7 @@ end
 
 function IffFileParser:get_sample_bytes()
   local body_chunk_info = self.body_chunk_info
-  local start_byte_number = body_chunk_info.start_byte_number + ID_AND_LENGTH_NB_BYTES
+  local start_byte_number = body_chunk_info.start_byte_number + IFF_ID_AND_LENGTH_NB_BYTES
 
   return string.sub(self.bytes, start_byte_number, start_byte_number + body_chunk_info.chunk_length)
 end
@@ -86,7 +86,7 @@ end
 
 function IffFileParser:get_nb_frames()
   local body_chunk_info = self.body_chunk_info
-  local remaining_file_size = #self.bytes + 1 - body_chunk_info.start_byte_number - ID_AND_LENGTH_NB_BYTES
+  local remaining_file_size = #self.bytes + 1 - body_chunk_info.start_byte_number - IFF_ID_AND_LENGTH_NB_BYTES
 
   return math.min(body_chunk_info.chunk_length, remaining_file_size)
 end
@@ -100,7 +100,7 @@ function IffFileParser:get_sample_name()
     return
   end
 
-  local name_start = name_chunk_info.start_byte_number + ID_AND_LENGTH_NB_BYTES
+  local name_start = name_chunk_info.start_byte_number + IFF_ID_AND_LENGTH_NB_BYTES
   local name_end = name_start + name_chunk_info.chunk_length
   local name_bytes = string.sub(self.bytes, name_start, name_end)
 
@@ -109,7 +109,7 @@ end
 
 function IffFileParser:get_renoise_sample_value(index)
   local body_chunk_info = self.body_chunk_info
-  local start_byte_number = body_chunk_info.start_byte_number + ID_AND_LENGTH_NB_BYTES
+  local start_byte_number = body_chunk_info.start_byte_number + IFF_ID_AND_LENGTH_NB_BYTES
 
   local signed_char =  self:_read_signed_char(start_byte_number + index - 1)
 

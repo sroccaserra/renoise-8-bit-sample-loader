@@ -30,6 +30,32 @@ describe('FileTypeAnalyzer', function()
     end)
   end)
 
+  describe('RAW files', function()
+    it('should not detect late first frame if BODY is absent', function()
+      local file_type_analyzer = FileTypeAnalyzer:new(test_data.SAMPLE_BYTES)
+
+      assert.is_false(file_type_analyzer:has_late_first_frame())
+    end)
+
+    it('should detect first frame position if BODY is absent', function()
+      local file_type_analyzer = FileTypeAnalyzer:new(test_data.SAMPLE_BYTES)
+
+      assert.is.equal(1, file_type_analyzer:find_first_frame_position())
+    end)
+
+    it('should detect late first frame if BODY is present', function()
+      local file_type_analyzer = FileTypeAnalyzer:new(test_data.FILE_WITH_LATE_BODY)
+
+      assert.is_true(file_type_analyzer:has_late_first_frame())
+    end)
+
+    it('should detect late first frame position if BODY is present', function()
+      local file_type_analyzer = FileTypeAnalyzer:new(test_data.FILE_WITH_LATE_BODY)
+
+      assert.is.equal(512+4+4+1, file_type_analyzer:find_first_frame_position())
+    end)
+  end)
+
   describe('Popular file formats not supported by this tool', function()
     it('should find an AIFF file', function()
       local file_type_analyzer = FileTypeAnalyzer:new(test_data.AIFF_FILE_BYTES)
