@@ -14,7 +14,7 @@ local VHDR_CHUNK = bytes_from_hex('56484452'..  -- 'VHDR'
                                   '4156'..      -- 16726, samplesPerSec = data sampling rate
                                   '01'..        -- ctOctave
                                   '00'..        -- sCompression
-                                  '00010000')   -- volume (16+16 bits fixed point), 00010000 = 0.1 (maximum in the IFF spec)
+                                  '00010000')   -- volume (16+16 bits fixed point), 00010000 = 1.0 (maximum in the IFF spec)
 local NAME_CHUNK = bytes_from_hex('4e414d45'..  -- 'NAME'
                                   '00000018'..  -- 24, chunk length
                                   '73742d30313a737472696e67733600000000000000000000')
