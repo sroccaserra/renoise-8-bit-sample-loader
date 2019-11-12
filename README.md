@@ -124,3 +124,5 @@ About the IFF sound file format:
 - <https://wiki.amigaos.net/wiki/8SVX_IFF_8-Bit_Sampled_Voice>
 - <https://www.exotica.org.uk/wiki/Format_and_Replays>
 - <http://lclevy.free.fr/amiga/formats.html>
+- <https://sourceforge.net/p/sox/code/ci/158fe5/tree/src/8svx.c>
+- <https://github.com/erikd/libsndfile/blob/7bc10c8/src/svx.c>
